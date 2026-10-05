@@ -1,0 +1,2 @@
+# Requires Python 3.10 or later.
+# No third-party dependencies: this demo uses only Python's standard library.
