@@ -1,18 +1,16 @@
 # [Demo] Agentic Payments over Card Network
 
-An interactive command-line demo of an agent buying groceries within a user's permission, handing a seller-scoped payment token to a merchant, and completing a simulated card payment through settlement and payout.
+This is a command-line demo of an agent buying groceries within a user's permission, handing a seller-scoped payment token to a merchant, and completing a simulated card payment through settlement and payout.
 
-This folder is the complete project. It works when copied into its own repository and does not import anything from the parent folder. Run each command separately, in the order shown below, and review its output before continuing.
 
-This is an offline teaching simulation. It does not contact Stripe, Blinkit, RuPay, an issuer, or a bank. The Stripe SPT request models the endpoint, seller profile, usage limits, secret-key authentication, and preview version in [Stripe's agent documentation](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens?agent-seller=agent). The INR/RuPay records are invented demo data; live SPT availability is listed separately in Stripe's documentation.
-
+This is an offline simulation with the mock data. It does not contact Stripe, Blinkit, RuPay, an issuer, or a bank. 
 ## Requirements and installation
 
 - Python 3.10 or later.
 - A terminal; the command examples below use Bash or Zsh on macOS/Linux.
 - No third-party Python packages, service accounts, real API keys, or internet connection to run the demo.
 
-Download the repository ZIP from GitHub and extract it, or clone your repository. Open a terminal in the folder containing this README and the Python files. If you are using the original parent project, enter the demo folder first with `cd '[Demo] Agentic Payments over Card Network'`.
+Download the repository ZIP from GitHub and extract it, or clone your repository. Open a terminal in the folder containing this README and the Python files. Enter the demo folder first with `cd '[Demo] Agentic Payments over Card Network'`.
 
 ```bash
 python3 --version
@@ -100,7 +98,7 @@ Accept search defaults (`banana`, quantity `12`, postal code `208016`). The cata
 python3 permission_verifier.py
 ```
 
-The verifier animates for two seconds, prints the decision and checks, then animates for two seconds before creating the approved scope mandate. The mandate automatically lasts at most 60 minutes, bounded by permission and checkout expiry. The existing `--expires_in_minutes 60` option remains supported for setting mandate lifetime; it is never requested interactively or included in the verifier's printed transaction input. The verifier checks category, merchant, address, currency, transaction cap, monthly cap, expiry, revocation, signatures, and checkout hash. A decline stops before credential issuance.
+The verifier prints the decision and checks adn then creates the approved scope mandate. The mandate automatically lasts at most 60 minutes, bounded by permission and checkout expiry. The existing `--expires_in_minutes 60` option remains supported for setting mandate lifetime; it is never requested interactively or included in the verifier's printed transaction input. The verifier checks category, merchant, address, currency, transaction cap, monthly cap, expiry, revocation, signatures, and checkout hash. A decline stops before credential issuance.
 
 The default purchase returns `approved` with reason `ALL_CONSTRAINTS_SATISFIED` and creates mandate `scope-101`. INR 185 is reserved against the monthly cap. If the decision is `declined`, stop here: no approved mandate or SPT is created, and the credential service rejects issuance.
 
@@ -210,23 +208,6 @@ Completed stages usually return their saved result without repeating the action.
 
 To demonstrate a policy decline, begin a fresh run and set `--transaction-limit 100` or `--monthly-limit 100` on `user_permission.py`. The default INR 185 checkout then fails verification. To demonstrate issuer decline, use `--decision decline` at authorization; the monthly reservation is released and settlement must not continue.
 
-## Publishing this folder on GitHub
-
-Publish the contents of this folder as the repository root. `.gitignore` excludes `demo_state/`, Python caches, virtual environments, and local environment files. Keep any custom state directories under `demo_state/` so they are also excluded. Local state contains synthetic vault records and signing keys, as well as any names and addresses you entered; it is not needed to run a fresh demo.
-
-Create an empty GitHub repository, then run these commands from this folder. Replace the URL with your own repository URL:
-
-```bash
-git init
-git branch -M main
-git add .
-git status --short
-git commit -m "Add standalone agentic payment demo"
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-git push -u origin main
-```
-
-Before committing, review `git status --short` to confirm no generated state or personal files are staged. Ignore rules do not remove files already tracked in an existing repository. No GitHub upload is required to run the demo locally.
 
 ## Simulation boundaries
 
